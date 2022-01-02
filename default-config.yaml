@@ -1,0 +1,22 @@
+server:
+  baseUrl: http://localhost:8080
+  port: 8080
+logs:
+  level: debug
+  format: simple
+data:
+  path: ./.resort
+spa:
+  staticFilesPath: ""
+  proxy:
+    configPath: ""
+    config: ~
+oidc:
+  providerUrl: ""
+  audience: ""
+  scope: openid email profile
+  clientId: ""
+  clientSecret: ""
+session:
+  cookie:
+    secure: true
