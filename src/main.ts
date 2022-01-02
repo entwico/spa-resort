@@ -4,7 +4,6 @@ import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import session from 'express-session';
 import expressStaticGzip from 'express-static-gzip';
-import helmet from 'helmet';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import levelStoreFactory from 'level-session-store';
 import morgan from 'morgan';
@@ -28,8 +27,6 @@ app.disable('x-powered-by');
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
 }
-
-app.use(helmet());
 
 const LevelStore = levelStoreFactory(session);
 
