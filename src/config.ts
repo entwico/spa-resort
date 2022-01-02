@@ -53,6 +53,7 @@ export const CONFIG: {
     scope: string;
   };
   session: {
+    ttl: number;
     cookie: {
       secure: boolean;
     };

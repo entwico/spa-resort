@@ -18,5 +18,6 @@ oidc:
   clientId: ""
   clientSecret: ""
 session:
+  ttl: 86400
   cookie:
     secure: true

@@ -5,9 +5,9 @@ import asyncHandler from 'express-async-handler';
 import session from 'express-session';
 import expressStaticGzip from 'express-static-gzip';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import levelStoreFactory from 'level-session-store';
 import morgan from 'morgan';
 import { join, resolve } from 'path';
+import fileStoreFactory from 'session-file-store';
 import { CONFIG } from './config';
 import { initializeData, sessionPath, sessionSecret } from './data';
 import { LOGGER } from './logger';
@@ -28,7 +28,7 @@ if (app.get('env') === 'production') {
   app.set('trust proxy', 1);
 }
 
-const LevelStore = levelStoreFactory(session);
+const FileStore = fileStoreFactory(session);
 
 app.use(morgan(
   ':method :url :status :res[content-length] - :response-time ms',
@@ -40,7 +40,10 @@ app.use(morgan(
 ));
 
 app.use(session({
-  store: new LevelStore(join(sessionPath, 'leveldb')),
+  store: new FileStore({
+    path: join(sessionPath, 'file-storage'),
+    ttl: CONFIG.session.ttl,
+  }),
   secret: sessionSecret,
   cookie: {
     secure: CONFIG.session.cookie.secure,
