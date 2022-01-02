@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/entwico/spa-resort/compare/v1.0.0...v1.0.1) (2022-01-02)
+
+
+### Bug Fixes
+
+* add default-config.yaml to the package ([52cc4c2](https://github.com/entwico/spa-resort/commit/52cc4c219438f984477e81107293a0991286e387))
+
 # 1.0.0 (2022-01-02)
 
 
