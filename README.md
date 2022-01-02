@@ -1,6 +1,6 @@
 # SPA Resort
 
-Opinionated server to host single page applications (SPA).
+Opinionated server for development and hosting of the Single Page Applications (SPA).
 
 What's inside:
 
