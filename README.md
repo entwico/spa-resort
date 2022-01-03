@@ -2,9 +2,9 @@
 
 Opinionated server for development and hosting of the Single Page Applications (SPA).
 
-What is assumed:
+Requirements:
 
-- the application is running behind a proxy / load balancer in production
+- the application **must** run behind a proxy / load balancer in production
 
 What's inside:
 
