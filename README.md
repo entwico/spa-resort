@@ -11,7 +11,7 @@ What's inside:
 What's **not** inside:
 
 - SSL / TLS
-- Security headers, such as e.g. provided by npm `helment` library
+- Security headers, such as e.g. provided by npm `helmet` library
 
 The above is not included because the application is assumed to run behind a load balancer that should implement it.
 
