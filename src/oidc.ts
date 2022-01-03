@@ -33,7 +33,7 @@ export class OIDC {
   }
 
   private getRedirectUri() {
-    return `${CONFIG.server.baseUrl}/oidc/callback`;
+    return `${CONFIG.server.baseUrl}/spa/oidc/callback`;
   }
 
   private async getClient(): Promise<Client> {

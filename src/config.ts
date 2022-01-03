@@ -29,6 +29,7 @@ const paths = [
 export const CONFIG: {
   server: {
     baseUrl: string;
+    behindProxy: boolean;
     port: number;
   };
   logs: {

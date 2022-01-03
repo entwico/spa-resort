@@ -1,5 +1,7 @@
 FROM node:16-alpine
 
+ENV NODE_ENV production
+
 RUN addgroup -S app && adduser -D -H -u 1001 -s /bin/bash app -G app \
   && apk update && apk upgrade && apk add --no-cache tini && rm -rf /var/cache/apk/* \
   && npm i -g @entwico/spa-resort \

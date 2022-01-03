@@ -2,6 +2,10 @@
 
 Opinionated server for development and hosting of the Single Page Applications (SPA).
 
+What is assumed:
+
+- the application is running behind a proxy / load balancer in production
+
 What's inside:
 
 - OIDC support (sessions)
@@ -12,8 +16,6 @@ What's **not** inside:
 
 - SSL / TLS
 - Security headers, such as e.g. provided by npm `helmet` library
-
-The above is not included because the application is assumed to run behind a load balancer that should implement it.
 
 ## Usage
 

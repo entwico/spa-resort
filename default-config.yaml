@@ -1,5 +1,6 @@
 server:
   baseUrl: http://localhost:8080
+  behindProxy: true
   port: 8080
 logs:
   level: debug

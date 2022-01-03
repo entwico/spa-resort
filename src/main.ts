@@ -24,8 +24,8 @@ const app = express();
 
 app.disable('x-powered-by');
 
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1);
+if (CONFIG.server.behindProxy) {
+  app.set('trust proxy', true);
 }
 
 const FileStore = fileStoreFactory(session);
@@ -47,6 +47,7 @@ app.use(session({
     ttl: CONFIG.session.ttl,
   }),
   secret: sessionSecret,
+  proxy: CONFIG.server.behindProxy,
   cookie: {
     secure: CONFIG.session.cookie.secure,
     sameSite: 'lax',

@@ -1,4 +1,7 @@
 module.exports = {
+  server: {
+    behindProxy: false,
+  },
   logs: {
     level: 'http',
     format: 'simple',
