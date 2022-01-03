@@ -19,7 +19,7 @@ The above is not included because the application is assumed to run behind a loa
 
 ### Server
 
-Use corresponding docker image as a deployment unit or a reference.
+Use [example docker image](examples/Dockerfile) as a deployment unit or a reference.
 
 ### Local (development)
 
