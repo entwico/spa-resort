@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/entwico/spa-resort/compare/v1.0.2...v1.1.0) (2022-01-03)
+
+
+### Bug Fixes
+
+* pass proper config for session behind proxy ([aa4b2ae](https://github.com/entwico/spa-resort/commit/aa4b2aeda509705d7c5209bc5dba0bf0b1b5d5a0))
+
+
+### Features
+
+* add health endpoint, scope all server calls under /spa ([8a52717](https://github.com/entwico/spa-resort/commit/8a5271702b596e629538f1cbd0c903e407f7e9ac))
+
 ## [1.0.2](https://github.com/entwico/spa-resort/compare/v1.0.1...v1.0.2) (2022-01-02)
 
 
