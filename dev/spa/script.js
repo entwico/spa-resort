@@ -1,5 +1,5 @@
 async function getToken() {
-  const response = await fetch('/spa/oidc/access-token');
+  const response = await fetch('/resort/oidc/access-token');
 
   if (response.ok) {
     const p = document.createElement('p');

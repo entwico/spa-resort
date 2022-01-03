@@ -39,7 +39,7 @@ app.use(morgan(
   },
 ));
 
-app.get('/spa/health', asyncHandler(async (_req, res) => res.status(200).end()));
+app.get('/resort/health', asyncHandler(async (_req, res) => res.status(200).end()));
 
 app.use(session({
   store: new FileStore({
@@ -56,13 +56,13 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-app.get('/spa/oidc/callback', asyncHandler(async (req, res) => await oidc.processCallback(req, res)));
+app.get('/resort/oidc/callback', asyncHandler(async (req, res) => await oidc.processCallback(req, res)));
 
-app.get('/spa/oidc/logout', asyncHandler(async (req, res) => await oidc.logout(req, res)));
+app.get('/resort/oidc/logout', asyncHandler(async (req, res) => await oidc.logout(req, res)));
 
-app.get('/spa/oidc/access-token', asyncHandler(async (req, res) => await oidc.getAccessToken(req, res)));
+app.get('/resort/oidc/access-token', asyncHandler(async (req, res) => await oidc.getAccessToken(req, res)));
 
-app.get('/spa/oidc/id-token', asyncHandler(async (req, res) => await oidc.getIdToken(req, res)));
+app.get('/resort/oidc/id-token', asyncHandler(async (req, res) => await oidc.getIdToken(req, res)));
 
 app.use((req, res, next) => {
   const session = getSession(req);
