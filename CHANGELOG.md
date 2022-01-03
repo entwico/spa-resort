@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/entwico/spa-resort/compare/v1.0.1...v1.0.2) (2022-01-02)
+
+
+### Bug Fixes
+
+* use file store for session ([98faf67](https://github.com/entwico/spa-resort/commit/98faf67d234583112e33e41c61fd9ebb4d66328f))
+
 ## [1.0.1](https://github.com/entwico/spa-resort/compare/v1.0.0...v1.0.1) (2022-01-02)
 
 
