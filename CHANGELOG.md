@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/entwico/spa-resort/compare/v1.1.0...v1.1.1) (2022-01-03)
+
+
+### Bug Fixes
+
+* change prefix for server requests ([8e7d583](https://github.com/entwico/spa-resort/commit/8e7d5836bfb6e2ca64b85b2d4fcbbac87c6acc7a))
+
 # [1.1.0](https://github.com/entwico/spa-resort/compare/v1.0.2...v1.1.0) (2022-01-03)
 
 
