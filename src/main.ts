@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import 'reflect-metadata';
+
 import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import session from 'express-session';

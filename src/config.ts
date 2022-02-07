@@ -1,64 +1,70 @@
 import { Command } from 'commander';
-import { readFileSync } from 'fs';
-import { merge } from 'lodash';
-import { extname, join, resolve } from 'path';
-import { parse as parseYaml } from 'yaml';
+import { resolve, join } from 'path';
+import { Property as p, loadConfig } from '@entwico/node-config';
 
-interface CliOptions { configPath: string[]; }
+class ConfigServer {
+  @p() baseUrl: string;
+  @p() port: number;
+  @p() behindProxy: boolean;
+}
+
+class ConfigLogs {
+  @p() level: string;
+  @p() format: 'json' | 'simple';
+}
+
+class ConfigSessionCookie {
+  @p() name: string;
+  @p() secure: boolean;
+  @p() sameSite: 'none' | 'lax' | 'strict';
+}
+
+class ConfigSession {
+  @p() ttl: number;
+  @p() cookie: ConfigSessionCookie;
+}
+
+class ConfigData {
+  @p() path: string;
+}
+
+class ConfigOidc {
+  @p() providerUrl: string;
+  @p() audience: string;
+  @p() scope: string;
+  @p() clientId: string;
+  @p() clientSecret: string;
+}
+
+class ConfigSpaProxy {
+  @p() config: { [prop: string]: any };
+  @p() configPath: string;
+}
+
+class ConfigSpa {
+  @p() staticFilesPath: string;
+  @p() proxy: ConfigSpaProxy;
+}
+
+export class Config {
+  @p() server: ConfigServer;
+  @p() logs: ConfigLogs;
+  @p() data: ConfigData;
+  @p() spa: ConfigSpa;
+  @p() session: ConfigSession;
+  @p() oidc: ConfigOidc;
+}
+
+interface CliOptions { config: string[]; }
 
 const commander = new Command();
 
-commander.requiredOption('-c, --configPath <paths...>', 'specify configuration files path(s)');
+commander.requiredOption('-c, --config <paths...>', 'specify configuration files path(s)');
 commander.parse(process.argv);
 
-function readConfigFile(path: string) {
-  path = resolve(path);
+const config = loadConfig(Config, {
+  env: { prefix: 'SPA_' },
+  files: [join(__dirname, '..', 'default-config.yaml'), ...commander.opts<CliOptions>().config].map(configPath => resolve(configPath)),
+});
 
-  switch (extname(path)) {
-    case '.yml': case '.yaml': return parseYaml(readFileSync(path, 'utf8'));
-    case '.js': case '.json': return require(path);
-    default: throw new Error('Config file format unknown for ' + path);
-  }
-}
-
-const paths = [
-  join(__dirname, '..', 'default-config.yaml'),
-  ...commander.opts<CliOptions>().configPath,
-];
-
-export const CONFIG: {
-  server: {
-    baseUrl: string;
-    behindProxy: boolean;
-    port: number;
-  };
-  logs: {
-    level: string;
-    format: string;
-  };
-  data: {
-    path: string;
-  };
-  spa: {
-    staticFilesPath: string;
-    proxy: {
-      config: string;
-      configPath: string;
-    }
-  };
-  oidc: {
-    providerUrl: string;
-    clientId: string;
-    clientSecret: string;
-    audience: string;
-    scope: string;
-  };
-  session: {
-    ttl: number;
-    cookie: {
-      secure: boolean;
-    };
-  };
-} = paths.reduce((res, p) => merge(res, readConfigFile(p)), {});
-
-// TODO validate config
+export const CONFIG = config;
