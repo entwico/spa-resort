@@ -117,14 +117,16 @@ export class OIDC {
     session.destroy(() => res.status(307).setHeader('Location', '/').end());
   }
 
-  async getIdToken(req: Request, res: Response) {
+  async getUserinfo(req: Request, res: Response) {
     const session = getSession(req);
 
     if (!session.idToken || !session.accessToken) {
       return res.status(401).end();
     }
 
-    res.status(200).send(session.idToken);
+    const userinfo = await this.client.userinfo(session.accessToken);
+
+    res.status(200).send(userinfo);
   }
 
   async getAccessToken(req: Request, res: Response) {

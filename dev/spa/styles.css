@@ -1,3 +1,17 @@
 body {
   font-weight: bold;
 }
+
+.access-token {
+  border: 1px solid red;
+  background: #ffdddd;
+  white-space: pre-line;
+  padding: 5px 10px;
+}
+
+.userinfo {
+  border: 1px solid #999;
+  background: #ccc;
+  white-space: pre-line;
+  padding: 5px 10px;
+}

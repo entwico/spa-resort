@@ -64,7 +64,7 @@ app.get('/resort/oidc/logout', asyncHandler(async (req, res) => await oidc.logou
 
 app.get('/resort/oidc/access-token', asyncHandler(async (req, res) => await oidc.getAccessToken(req, res)));
 
-app.get('/resort/oidc/id-token', asyncHandler(async (req, res) => await oidc.getIdToken(req, res)));
+app.get('/resort/oidc/userinfo', asyncHandler(async (req, res) => await oidc.getUserinfo(req, res)));
 
 app.use((req, res, next) => {
   const session = getSession(req);
