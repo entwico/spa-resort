@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/entwico/spa-resort/compare/v1.1.1...v1.1.2) (2022-02-07)
+
+
+### Bug Fixes
+
+* use better config implementation ([4820dab](https://github.com/entwico/spa-resort/commit/4820dab3111b350f754998ec5c1e36428fcfb76c))
+
 ## [1.1.1](https://github.com/entwico/spa-resort/compare/v1.1.0...v1.1.1) (2022-01-03)
 
 
