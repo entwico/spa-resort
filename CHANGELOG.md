@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/entwico/spa-resort/compare/v1.1.2...v1.2.0) (2022-02-07)
+
+
+### Features
+
+* transform id-token request into userinfo ([26d4fbf](https://github.com/entwico/spa-resort/commit/26d4fbfdd8d64741eafd883c53b137bcbfeaa9bb))
+
 ## [1.1.2](https://github.com/entwico/spa-resort/compare/v1.1.1...v1.1.2) (2022-02-07)
 
 
