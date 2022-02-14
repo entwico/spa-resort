@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/entwico/spa-resort/compare/v1.2.0...v1.2.1) (2022-02-14)
+
+
+### Bug Fixes
+
+* set session cookie maxAge from ttl ([c5e003d](https://github.com/entwico/spa-resort/commit/c5e003dbceb3481dcda83c062835429f4d292a71))
+
 # [1.2.0](https://github.com/entwico/spa-resort/compare/v1.1.2...v1.2.0) (2022-02-07)
 
 
