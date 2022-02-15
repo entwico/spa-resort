@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/entwico/spa-resort/compare/v1.2.1...v1.3.0) (2022-02-15)
+
+
+### Bug Fixes
+
+* update security deps ([0c8f932](https://github.com/entwico/spa-resort/commit/0c8f932f8cfd21d010829100b09e526e6a73c124))
+
+
+### Features
+
+* add argument for changing config env prefix ([ba1658f](https://github.com/entwico/spa-resort/commit/ba1658f07967ce6efd9217796c8bea0806d9d8d8))
+
 ## [1.2.1](https://github.com/entwico/spa-resort/compare/v1.2.0...v1.2.1) (2022-02-14)
 
 
