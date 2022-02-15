@@ -92,7 +92,8 @@ export class OIDC {
     if (session.idToken) {
       LOGGER.debug('Already logged in, skipping code response');
 
-      return res.status(307).setHeader('Location', '/').end();
+      res.status(307).setHeader('Location', '/').end();
+      return;
     }
 
     const tokenSet = await this.client.callback(this.getRedirectUri(), params, { state: session.oidcState, nonce: session.oidcNonce });
@@ -117,11 +118,12 @@ export class OIDC {
     session.destroy(() => res.status(307).setHeader('Location', '/').end());
   }
 
-  async getUserinfo(req: Request, res: Response) {
+  async getUserinfo(req: Request, res: Response): Promise<void> {
     const session = getSession(req);
 
     if (!session.idToken || !session.accessToken) {
-      return res.status(401).end();
+      res.status(401).end();
+      return;
     }
 
     const userinfo = await this.client.userinfo(session.accessToken);
@@ -129,13 +131,14 @@ export class OIDC {
     res.status(200).send(userinfo);
   }
 
-  async getAccessToken(req: Request, res: Response) {
+  async getAccessToken(req: Request, res: Response): Promise<void> {
     LOGGER.debug('Processing access token request');
 
     const session = getSession(req);
 
     if (!session.idToken || !session.accessToken) {
-      return res.status(401).end();
+      res.status(401).end();
+      return;
     }
 
     enum Status {
@@ -183,9 +186,10 @@ export class OIDC {
         return;
       } else {
         res.status(500).end();
+        return;
       }
     }
 
-    return res.status(401).end();
+    res.status(401).end();
   }
 }

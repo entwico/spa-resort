@@ -2,7 +2,9 @@
   "name": "@entwico/spa-resort",
   "version": "1.0.0",
   "scripts": {
-    "start": "nodemon src/main.ts -c dev/.resortrc.js",
+    "start": "nodemon src/main.ts --env-prefix 'ASD_' -c dev/.resortrc.js",
+    "start:single": "ts-node src/main.ts -e 'ASD_' -c dev/.resortrc.js",
+    "help": "ts-node src/main.ts --help",
     "build": "rm -rf .dist && tsc",
     "lint": "eslint src/**/*.ts",
     "release": "semantic-release"

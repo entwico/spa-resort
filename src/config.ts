@@ -55,16 +55,27 @@ export class Config {
   @p() oidc: ConfigOidc;
 }
 
-interface CliOptions { config: string[]; }
+interface CliOptions {
+  envPrefix?: string;
+  config: string[];
+}
 
 const commander = new Command();
 
+commander
+  .name('SPA Resort')
+  .description('A place where a Single Page Application can rest');
+
+commander.option('-e, --env-prefix <string>', 'prefix for the configuration environment variables, default "SPA_"');
 commander.requiredOption('-c, --config <paths...>', 'specify configuration files path(s)');
+
 commander.parse(process.argv);
 
+const options = commander.opts<CliOptions>();
+
 const config = loadConfig(Config, {
-  env: { prefix: 'SPA_' },
-  files: [join(__dirname, '..', 'default-config.yaml'), ...commander.opts<CliOptions>().config].map(configPath => resolve(configPath)),
+  env: { prefix: options.envPrefix ?? 'SPA_' },
+  files: [join(__dirname, '..', 'default-config.yaml'), ...options.config].map(configPath => resolve(configPath)),
 });
 
 export const CONFIG = config;

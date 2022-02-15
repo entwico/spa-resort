@@ -32,16 +32,15 @@ if (CONFIG.server.behindProxy) {
 
 const FileStore = fileStoreFactory(session);
 
-app.use(morgan(
-  ':method :url :status :res[content-length] - :response-time ms',
-  {
-    stream: {
-      write: (message) => LOGGER.http(message.replace(/\n$/, '')),
-    },
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
+  stream: {
+    write: (message) => LOGGER.http(message.replace(/\n$/, '')),
   },
-));
+}));
 
-app.get('/resort/health', asyncHandler(async (_req, res) => res.status(200).end()));
+app.get('/resort/health', asyncHandler(async (_req, res) => {
+  res.status(200).end();
+}));
 
 app.use(session({
   store: new FileStore({
