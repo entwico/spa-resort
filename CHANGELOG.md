@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/entwico/spa-resort/compare/v1.3.0...v1.3.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* fix proxying multiple websockets ([83a71d0](https://github.com/entwico/spa-resort/commit/83a71d04e1c2570864f33d242b5087247ce74116))
+
 # [1.3.0](https://github.com/entwico/spa-resort/compare/v1.2.1...v1.3.0) (2022-02-15)
 
 
