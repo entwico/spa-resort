@@ -8,7 +8,7 @@ Requirements:
 
 What's inside:
 
-- OIDC support (sessions)
+- sessions / OIDC support
 - access / refresh / id tokens are automatically handled
 - proxy for services calls (see **security notice** before using it)
 
