@@ -83,7 +83,9 @@ if (CONFIG.spa.proxy.config || !!CONFIG.spa.proxy.configPath) {
   Object.keys(proxyConfig).forEach(path => {
     LOGGER.info('Proxying requests', { path, to: proxyConfig[path].target });
 
-    app.use(path, createProxyMiddleware({
+    // important to proxy to multiple websockets https://github.com/chimurai/http-proxy-middleware/issues/463#issuecomment-676630189
+    // can cause performance issues?
+    app.use(createProxyMiddleware(path, {
       ...proxyConfig[path],
       logLevel: 'silent',
       onError: e => LOGGER.error('Proxy error', e),
