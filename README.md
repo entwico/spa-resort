@@ -49,6 +49,7 @@ module.exports = {
     },
   },
   spa: {
+    // proxy is mostly intended for development only
     proxy: {
       config: {
         '/another-path-to-proxy': { target: process.env.UI_PROXY_CONTELLO_CORE, secure: false, changeOrigin: true },
