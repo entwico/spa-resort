@@ -21,4 +21,5 @@ oidc:
 session:
   ttl: 86400
   cookie:
+    name: spa-sid
     secure: true
