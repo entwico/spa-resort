@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/entwico/spa-resort/compare/v1.3.1...v1.4.0) (2022-04-02)
+
+
+### Features
+
+* add default cookie name ([23f4bab](https://github.com/entwico/spa-resort/commit/23f4babcac84e6c65bde6f4686c22ac352baf6b3))
+* add oidc logout flow ([8395613](https://github.com/entwico/spa-resort/commit/8395613cbcce514d21244d957f4d4448d9dfde3b))
+
 ## [1.3.1](https://github.com/entwico/spa-resort/compare/v1.3.0...v1.3.1) (2022-03-17)
 
 
