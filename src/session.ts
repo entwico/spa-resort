@@ -5,6 +5,7 @@ export interface Session extends ExpressSession {
   idToken: string;
   accessToken: string;
   refreshToken: string;
+  logoutState: string;
   oidcState: string;
   oidcNonce: string;
   oidcOriginalUrl: string;

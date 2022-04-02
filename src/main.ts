@@ -58,9 +58,13 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-app.get('/resort/oidc/callback', asyncHandler(async (req, res) => await oidc.processCallback(req, res)));
+app.get('/resort/oidc/callback', asyncHandler(async (req, res) => await oidc.processLoginCallback(req, res)));
 
-app.get('/resort/oidc/logout', asyncHandler(async (req, res) => await oidc.logout(req, res)));
+app.get('/resort/oidc/logout', asyncHandler(async (req, res) => await oidc.initiateLogoutFlow(req, res)));
+
+app.get('/resort/oidc/front-channel-logout', asyncHandler(async (req, res) => await oidc.processFrontChannelLogout(req, res)));
+
+app.get('/resort/oidc/post-logout', asyncHandler(async (req, res) => await oidc.processLogoutCallback(req, res)));
 
 app.get('/resort/oidc/access-token', asyncHandler(async (req, res) => await oidc.getAccessToken(req, res)));
 
