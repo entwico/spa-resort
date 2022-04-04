@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/entwico/spa-resort/compare/v1.4.0...v1.4.1) (2022-04-04)
+
+
+### Bug Fixes
+
+* use cookie name setting ([2573fe8](https://github.com/entwico/spa-resort/commit/2573fe8252fed364785d442b8455389e4a920fe3))
+
 # [1.4.0](https://github.com/entwico/spa-resort/compare/v1.3.1...v1.4.0) (2022-04-02)
 
 
