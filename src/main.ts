@@ -49,6 +49,7 @@ app.use(session({
   }),
   secret: sessionSecret,
   proxy: CONFIG.server.behindProxy,
+  name: CONFIG.session.cookie.name,
   cookie: {
     secure: CONFIG.session.cookie.secure,
     sameSite: 'lax',
