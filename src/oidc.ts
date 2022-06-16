@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
-import jwt, { GetPublicKeyOrSecret, TokenExpiredError } from 'jsonwebtoken';
+import { verify, GetPublicKeyOrSecret, TokenExpiredError, decode } from 'jsonwebtoken';
 import jwksClient, { JwksClient } from 'jwks-rsa';
 import { CallbackParamsType, Client, generators, Issuer } from 'openid-client';
 import { CONFIG } from './config';
 import { LOGGER } from './logger';
-import { getSession } from './session';
+import { destroySession, getAllSessions, getSessionFromRequest, Session } from './session';
+
+enum JWTStatus {
+  valid,
+  expired,
+  error
+}
 
 export class OIDC {
 
@@ -62,7 +68,7 @@ export class OIDC {
   async initiateLoginFlow(req: Request, res: Response, originalUrl: string) {
     LOGGER.debug('Starting new OIDC flow');
 
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
 
     const state = generators.state();
     const nonce = generators.nonce();
@@ -80,7 +86,7 @@ export class OIDC {
   }
 
   async processLoginCallback(req: Request, res: Response): Promise<void> {
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
     const params = req.query as CallbackParamsType;
 
     if (params.error) {
@@ -107,9 +113,13 @@ export class OIDC {
     session.idToken = tokenSet.id_token;
     session.accessToken = tokenSet.access_token;
     session.refreshToken = tokenSet.refresh_token;
-    session.oidcNonce = null;
-    session.oidcOriginalUrl = null;
-    session.oidcState = null;
+
+    const decoded = decode(tokenSet.id_token, { json: true });
+
+    session.sub = decoded.sub;
+    session.sid = decoded.sid;
+
+    session.oidcNonce = session.oidcOriginalUrl = session.oidcState = null;
 
     LOGGER.debug('Updated session with tokens');
 
@@ -117,7 +127,7 @@ export class OIDC {
   }
 
   async initiateLogoutFlow(req: Request, res: Response) {
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
 
     LOGGER.debug('Creating logout url');
 
@@ -133,7 +143,7 @@ export class OIDC {
   async processFrontChannelLogout(req: Request, res: Response) {
     LOGGER.debug('Received front channel logout request');
 
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
 
     session.destroy(err => {
       let status = 200;
@@ -166,11 +176,68 @@ export class OIDC {
     });
   }
 
+  async processBackChannelLogout(req: Request, res: Response) {
+    LOGGER.debug('Received back channel logout request');
+
+    const token = req.query['logout_token'] as string;
+
+    if (!token || typeof token !== 'string') {
+      LOGGER.debug('Received no logout_token or it is not a string');
+
+      res.status(400).end();
+    }
+
+    switch (await this.getTokenStatus(token)) {
+      case JWTStatus.valid: {
+        LOGGER.debug('Logout token is valid');
+
+        const { sid, sub } = decode(token, { json: true });
+
+        const sessions = await getAllSessions();
+        const sessionsToDestroy = sessions.filter((session: Session) => {
+          if (sid) {
+            return session.sid === sid;
+          } else if (sub) {
+            return session.sub === sub;
+          } else {
+            res
+              .status(400)
+              .header('Cache-Control', 'no-store')
+              .end();
+          }
+        });
+
+        try {
+          await Promise.all(sessionsToDestroy.map(s => destroySession(s.id)));
+
+          LOGGER.debug('Sessions destroyed');
+
+          res.status(200)
+            .header('Cache-Control', 'no-store')
+            .end();
+        } catch (err) {
+          LOGGER.error('Session cannot be destroyed', err);
+
+          res
+            .status(400)
+            .header('Cache-Control', 'no-store')
+            .end();
+        }
+
+        break;
+      }
+      default: {
+        LOGGER.debug('Logout token is invalid or expired');
+        res.status(400).end();
+      }
+    }
+  }
+
   async processLogoutCallback(req: Request, res: Response) {
     LOGGER.debug('Received post logout callback');
 
     const params = req.query as CallbackParamsType;
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
 
     if (params.state !== session.logoutState) {
       res
@@ -199,7 +266,7 @@ export class OIDC {
   async getUserinfo(req: Request, res: Response): Promise<void> {
     LOGGER.debug('Getting userinfo');
 
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
 
     if (!session.idToken || !session.accessToken) {
       res.status(401).end();
@@ -216,62 +283,62 @@ export class OIDC {
   async getAccessToken(req: Request, res: Response): Promise<void> {
     LOGGER.debug('Processing access token request');
 
-    const session = getSession(req);
+    const session = getSessionFromRequest(req);
 
     if (!session.idToken || !session.accessToken) {
       res.status(401).end();
       return;
     }
 
-    enum Status {
-      valid,
-      expired,
-      error
-    }
+    switch (await this.getTokenStatus(session.accessToken)) {
+      case JWTStatus.valid: {
+        LOGGER.debug('Actual access token is valid');
 
-    const status = await new Promise<Status>((resolve) => jwt.verify(session.accessToken, this.getKey, (err) => {
+        res.status(200).send(session.accessToken);
+
+        break;
+      }
+      case JWTStatus.expired: {
+        LOGGER.debug('Access token is expired');
+
+        if (session.refreshToken) {
+          LOGGER.debug('Refresh token available, refreshing', { rt: session.refreshToken });
+
+          const tokenSet = await this.client.refresh(session.refreshToken);
+
+          if (tokenSet.id_token) session.idToken = tokenSet.id_token;
+          if (tokenSet.access_token) session.accessToken = tokenSet.access_token;
+          if (tokenSet.refresh_token) session.refreshToken = tokenSet.refresh_token;
+
+          LOGGER.debug('Refresh complete');
+
+          res.status(200).send(session.accessToken);
+        }
+
+        break;
+      }
+      case JWTStatus.error: {
+        res.status(500).end();
+
+        break;
+      }
+      default: res.status(401).end();
+    }
+  }
+
+  private getTokenStatus(token: string) {
+    return new Promise<JWTStatus>((resolve) => verify(token, this.getKey, (err) => {
       if (err) {
         if (err instanceof TokenExpiredError) {
-          return resolve(Status.expired);
+          return resolve(JWTStatus.expired);
         }
 
         LOGGER.error('Unknown error while validating the token', err);
 
-        return resolve(Status.error);
+        return resolve(JWTStatus.error);
       }
 
-      return resolve(Status.valid);
+      return resolve(JWTStatus.valid);
     }));
-
-    if (status === Status.valid) {
-      LOGGER.debug('Actual access token is valid');
-
-      res.status(200).send(session.accessToken);
-
-      return;
-    } else if (status === Status.expired) {
-      LOGGER.debug('Access token is expired');
-
-      if (session.refreshToken) {
-        LOGGER.debug('Refresh token available, refreshing', { rt: session.refreshToken });
-
-        const tokenSet = await this.client.refresh(session.refreshToken);
-
-        if (tokenSet.id_token) session.idToken = tokenSet.id_token;
-        if (tokenSet.access_token) session.accessToken = tokenSet.access_token;
-        if (tokenSet.refresh_token) session.refreshToken = tokenSet.refresh_token;
-
-        LOGGER.debug('Refresh complete');
-
-        res.status(200).send(session.accessToken);
-
-        return;
-      } else {
-        res.status(500).end();
-        return;
-      }
-    }
-
-    res.status(401).end();
   }
 }

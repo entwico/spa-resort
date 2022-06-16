@@ -8,13 +8,12 @@ import session from 'express-session';
 import expressStaticGzip from 'express-static-gzip';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import morgan from 'morgan';
-import { join, resolve } from 'path';
-import fileStoreFactory from 'session-file-store';
+import { resolve } from 'path';
 import { CONFIG } from './config';
-import { initializeData, sessionPath, sessionSecret } from './data';
+import { initializeData, sessionSecret, sessionStore } from './data';
 import { LOGGER } from './logger';
 import { OIDC } from './oidc';
-import { getSession } from './session';
+import { getSessionFromRequest } from './session';
 
 initializeData(CONFIG.data.path);
 
@@ -30,7 +29,7 @@ if (CONFIG.server.behindProxy) {
   app.set('trust proxy', true);
 }
 
-const FileStore = fileStoreFactory(session);
+// w/o session
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
   stream: {
@@ -42,11 +41,12 @@ app.get('/resort/health', asyncHandler(async (_req, res) => {
   res.status(200).end();
 }));
 
+app.get('/resort/oidc/back-channel-logout', asyncHandler(async (req, res) => await oidc.processBackChannelLogout(req, res)));
+
+// w/ session
+
 app.use(session({
-  store: new FileStore({
-    path: join(sessionPath, 'file-storage'),
-    ttl: CONFIG.session.ttl,
-  }),
+  store: sessionStore,
   secret: sessionSecret,
   proxy: CONFIG.server.behindProxy,
   name: CONFIG.session.cookie.name,
@@ -72,7 +72,7 @@ app.get('/resort/oidc/access-token', asyncHandler(async (req, res) => await oidc
 app.get('/resort/oidc/userinfo', asyncHandler(async (req, res) => await oidc.getUserinfo(req, res)));
 
 app.use((req, res, next) => {
-  const session = getSession(req);
+  const session = getSessionFromRequest(req);
 
   if (!session.idToken) {
     oidc.initiateLoginFlow(req, res, req.url).catch(next);

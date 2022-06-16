@@ -2,9 +2,13 @@ import assert from 'assert';
 import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { generators } from 'openid-client';
 import { join, resolve } from 'path';
+import fileStoreFactory from 'session-file-store';
+import session, { Store } from 'express-session';
+import { CONFIG } from './config';
 
 export let sessionSecret: string;
 export let sessionPath: string;
+export let sessionStore: Store;
 
 export function initializeData(path: string) {
   path = resolve(path);
@@ -33,4 +37,11 @@ export function initializeData(path: string) {
 
     sessionSecret = readFileSync(secretPath, 'utf-8');
   }
+
+  const FileStore = fileStoreFactory(session);
+
+  sessionStore = new FileStore({
+    path: join(sessionPath, 'file-storage'),
+    ttl: CONFIG.session.ttl,
+  });
 }
