@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/entwico/spa-resort/compare/v1.4.1...v1.5.0) (2022-06-16)
+
+
+### Features
+
+* add backchannel logout ([4674146](https://github.com/entwico/spa-resort/commit/46741464b61442448ec2ebee295d3f58321bf173))
+
 ## [1.4.1](https://github.com/entwico/spa-resort/compare/v1.4.0...v1.4.1) (2022-04-04)
 
 
