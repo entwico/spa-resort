@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/entwico/spa-resort/compare/v1.5.0...v1.5.1) (2022-07-04)
+
+
+### Bug Fixes
+
+* fix backend channel logout flow ([19086fa](https://github.com/entwico/spa-resort/commit/19086fa572a950421e28f121a99cae2c61dd5b8e))
+
 # [1.5.0](https://github.com/entwico/spa-resort/compare/v1.4.1...v1.5.0) (2022-06-16)
 
 
