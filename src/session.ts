@@ -38,7 +38,7 @@ export function getAllSessions(): Promise<Session[]> {
         return reject(error);
       }
 
-      resolve(Promise.all(files.map(f => getSession(basename(f)))));
+      resolve(Promise.all(files.map(f => getSession(basename(f, '.json')))));
     });
   });
 }

@@ -4,6 +4,7 @@ import 'reflect-metadata';
 
 import express, { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
+import bodyParser from 'body-parser';
 import session from 'express-session';
 import expressStaticGzip from 'express-static-gzip';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -23,6 +24,9 @@ oidc.initialize();
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 app.disable('x-powered-by');
 
 if (CONFIG.server.behindProxy) {
@@ -41,7 +45,7 @@ app.get('/resort/health', asyncHandler(async (_req, res) => {
   res.status(200).end();
 }));
 
-app.get('/resort/oidc/back-channel-logout', asyncHandler(async (req, res) => await oidc.processBackChannelLogout(req, res)));
+app.post('/resort/oidc/back-channel-logout', asyncHandler(async (req, res) => await oidc.processBackChannelLogout(req, res)));
 
 // w/ session
 
