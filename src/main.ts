@@ -103,7 +103,7 @@ if (CONFIG.spa.proxy.config || !!CONFIG.spa.proxy.configPath) {
   const proxyConfig = CONFIG.spa.proxy.config || require(resolve(CONFIG.spa.proxy.configPath));
 
   Object.keys(proxyConfig).forEach(path => {
-    const publicRoute = CONFIG.spa.publicPaths.some(publicPath => path.startsWith(publicPath));
+    const publicRoute = CONFIG.spa.publicPaths?.some(publicPath => path.startsWith(publicPath)) || false;
 
     LOGGER.info('Proxying requests', { path, to: proxyConfig[path].target, publicRoute });
 

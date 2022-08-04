@@ -10,6 +10,7 @@ module.exports = {
     secret: 'some-secret',
     cookie: {
       secure: false,
+      sameSite: 'none'
     },
   },
   spa: {
