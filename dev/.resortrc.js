@@ -22,6 +22,7 @@ module.exports = {
       config: {
         '/public-proxy': { target: 'http://example.com', secure: false, changeOrigin: true },
         '/example': { target: 'http://example.com', secure: false, changeOrigin: true },
+        // '/': { target: 'http://example.com', secure: false, changeOrigin: true },
       },
     },
   },

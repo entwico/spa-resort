@@ -56,7 +56,7 @@ app.use(session({
   name: CONFIG.session.cookie.name,
   cookie: {
     secure: CONFIG.session.cookie.secure,
-    sameSite: 'lax',
+    sameSite: CONFIG.session.cookie.sameSite,
     maxAge: CONFIG.session.ttl * 1e3,
   },
   resave: false,
