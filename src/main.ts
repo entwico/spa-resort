@@ -47,6 +47,21 @@ app.get('/resort/health', asyncHandler(async (_req, res) => {
 
 app.post('/resort/oidc/back-channel-logout', asyncHandler(async (req, res) => await oidc.processBackChannelLogout(req, res)));
 
+if (CONFIG.spa.staticFilesPath) {
+  CONFIG.spa.publicPaths?.forEach(path => {
+    const merged = resolve(CONFIG.spa.staticFilesPath, path);
+
+    console.log(merged);
+
+    LOGGER.info('Serving static files', { location: merged });
+
+    app.use('/' + path, expressStaticGzip(resolve(merged), {
+      enableBrotli: true,
+      orderPreference: ['br'],
+    }));
+  });
+}
+
 // w/ session
 
 app.use(session({

@@ -14,6 +14,9 @@ module.exports = {
   },
   spa: {
     staticFilesPath: './dev/spa',
+    publicPaths: [
+      'public',
+    ],
     proxy: {
       config: {
         '/example': { target: 'http://example.com', secure: false, changeOrigin: true }

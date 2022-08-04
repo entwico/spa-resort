@@ -9,6 +9,7 @@ data:
   path: ./.resort
 spa:
   staticFilesPath: ""
+  publicPaths: []
   proxy:
     configPath: ""
     config: ~

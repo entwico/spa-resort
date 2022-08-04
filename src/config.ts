@@ -1,58 +1,59 @@
 import { Command } from 'commander';
 import { resolve, join } from 'path';
-import { Property as p, loadConfig } from '@entwico/node-config';
+import { Property, List, loadConfig } from '@entwico/node-config';
 
 class ConfigServer {
-  @p() baseUrl: string;
-  @p() port: number;
-  @p() behindProxy: boolean;
+  @Property() baseUrl: string;
+  @Property() port: number;
+  @Property() behindProxy: boolean;
 }
 
 class ConfigLogs {
-  @p() level: string;
-  @p() format: 'json' | 'simple';
+  @Property() level: string;
+  @Property() format: 'json' | 'simple';
 }
 
 class ConfigSessionCookie {
-  @p() name: string;
-  @p() secure: boolean;
-  @p() sameSite: 'none' | 'lax' | 'strict';
+  @Property() name: string;
+  @Property() secure: boolean;
+  @Property() sameSite: 'none' | 'lax' | 'strict';
 }
 
 class ConfigSession {
-  @p() ttl: number;
-  @p() cookie: ConfigSessionCookie;
+  @Property() ttl: number;
+  @Property() cookie: ConfigSessionCookie;
 }
 
 class ConfigData {
-  @p() path: string;
+  @Property() path: string;
 }
 
 class ConfigOidc {
-  @p() providerUrl: string;
-  @p() audience: string;
-  @p() scope: string;
-  @p() clientId: string;
-  @p() clientSecret: string;
+  @Property() providerUrl: string;
+  @Property() audience: string;
+  @Property() scope: string;
+  @Property() clientId: string;
+  @Property() clientSecret: string;
 }
 
 class ConfigSpaProxy {
-  @p() config: { [prop: string]: any };
-  @p() configPath: string;
+  @Property() config: { [prop: string]: any };
+  @Property() configPath: string;
 }
 
 class ConfigSpa {
-  @p() staticFilesPath: string;
-  @p() proxy: ConfigSpaProxy;
+  @Property() staticFilesPath: string;
+  @List(String) publicPaths: string[];
+  @Property() proxy: ConfigSpaProxy;
 }
 
 export class Config {
-  @p() server: ConfigServer;
-  @p() logs: ConfigLogs;
-  @p() data: ConfigData;
-  @p() spa: ConfigSpa;
-  @p() session: ConfigSession;
-  @p() oidc: ConfigOidc;
+  @Property() server: ConfigServer;
+  @Property() logs: ConfigLogs;
+  @Property() data: ConfigData;
+  @Property() spa: ConfigSpa;
+  @Property() session: ConfigSession;
+  @Property() oidc: ConfigOidc;
 }
 
 interface CliOptions {
