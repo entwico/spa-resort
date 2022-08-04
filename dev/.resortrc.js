@@ -15,11 +15,13 @@ module.exports = {
   spa: {
     staticFilesPath: './dev/spa',
     publicPaths: [
-      'public',
+      '/public/',
+      '/public-proxy',
     ],
     proxy: {
       config: {
-        '/example': { target: 'http://example.com', secure: false, changeOrigin: true }
+        '/public-proxy': { target: 'http://example.com', secure: false, changeOrigin: true },
+        '/example': { target: 'http://example.com', secure: false, changeOrigin: true },
       },
     },
   },

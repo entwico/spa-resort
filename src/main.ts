@@ -2,14 +2,14 @@
 
 import 'reflect-metadata';
 
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import expressStaticGzip from 'express-static-gzip';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import morgan from 'morgan';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 import { CONFIG } from './config';
 import { initializeData, sessionSecret, sessionStore } from './data';
 import { LOGGER } from './logger';
@@ -47,21 +47,6 @@ app.get('/resort/health', asyncHandler(async (_req, res) => {
 
 app.post('/resort/oidc/back-channel-logout', asyncHandler(async (req, res) => await oidc.processBackChannelLogout(req, res)));
 
-if (CONFIG.spa.staticFilesPath) {
-  CONFIG.spa.publicPaths?.forEach(path => {
-    const merged = resolve(CONFIG.spa.staticFilesPath, path);
-
-    console.log(merged);
-
-    LOGGER.info('Serving static files', { location: merged });
-
-    app.use('/' + path, expressStaticGzip(resolve(merged), {
-      enableBrotli: true,
-      orderPreference: ['br'],
-    }));
-  });
-}
-
 // w/ session
 
 app.use(session({
@@ -90,7 +75,7 @@ app.get('/resort/oidc/access-token', asyncHandler(async (req, res) => await oidc
 
 app.get('/resort/oidc/userinfo', asyncHandler(async (req, res) => await oidc.getUserinfo(req, res)));
 
-app.use((req, res, next) => {
+const protectByLogin = (req: Request, res: Response, next: NextFunction) => {
   const session = getSessionFromRequest(req);
 
   if (!session.idToken) {
@@ -99,23 +84,46 @@ app.use((req, res, next) => {
     session.touch();
     next();
   }
-});
+};
+
+if (CONFIG.spa.staticFilesPath) {
+  CONFIG.spa.publicPaths?.forEach(path => {
+    const merged = join(resolve(CONFIG.spa.staticFilesPath), path);
+
+    LOGGER.info('Serving static files', { location: merged });
+
+    app.use(path, expressStaticGzip(resolve(merged), {
+      enableBrotli: true,
+      orderPreference: ['br'],
+    }));
+  });
+}
 
 if (CONFIG.spa.proxy.config || !!CONFIG.spa.proxy.configPath) {
   const proxyConfig = CONFIG.spa.proxy.config || require(resolve(CONFIG.spa.proxy.configPath));
 
   Object.keys(proxyConfig).forEach(path => {
-    LOGGER.info('Proxying requests', { path, to: proxyConfig[path].target });
+    const publicRoute = CONFIG.spa.publicPaths.some(publicPath => path.startsWith(publicPath));
+
+    LOGGER.info('Proxying requests', { path, to: proxyConfig[path].target, publicRoute });
 
     // important to proxy to multiple websockets https://github.com/chimurai/http-proxy-middleware/issues/463#issuecomment-676630189
     // can cause performance issues?
-    app.use(createProxyMiddleware(path, {
+    const proxyHandler = createProxyMiddleware(path, {
       ...proxyConfig[path],
       logLevel: 'silent',
       onError: e => LOGGER.error('Proxy error', e),
-    }));
+    });
+
+    if (publicRoute) {
+      app.use([proxyHandler]);
+    } else {
+      app.use([protectByLogin, proxyHandler]);
+    }
   });
 }
+
+app.use(protectByLogin);
 
 if (CONFIG.spa.staticFilesPath) {
   LOGGER.info('Serving static files', { location: CONFIG.spa.staticFilesPath });
