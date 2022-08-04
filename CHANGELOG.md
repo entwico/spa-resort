@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/entwico/spa-resort/compare/v1.6.1...v1.6.2) (2022-08-04)
+
+
+### Bug Fixes
+
+* read sameSite from config ([ec8ee65](https://github.com/entwico/spa-resort/commit/ec8ee65f40f38089f186ac216dedc338e96202c2))
+
 ## [1.6.1](https://github.com/entwico/spa-resort/compare/v1.6.0...v1.6.1) (2022-08-04)
 
 
