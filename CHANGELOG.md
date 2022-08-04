@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/entwico/spa-resort/compare/v1.6.0...v1.6.1) (2022-08-04)
+
+
+### Bug Fixes
+
+* apply publicPaths on proxied requests ([42c9500](https://github.com/entwico/spa-resort/commit/42c95002b589d24a30f164b3d194cb3aeb113268))
+
 # [1.6.0](https://github.com/entwico/spa-resort/compare/v1.5.1...v1.6.0) (2022-08-04)
 
 
