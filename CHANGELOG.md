@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/entwico/spa-resort/compare/v1.6.2...v1.6.3) (2022-08-04)
+
+
+### Bug Fixes
+
+* fix empty public paths problem ([467e50e](https://github.com/entwico/spa-resort/commit/467e50e2db1621f2743b923baadcb51a0304d39b))
+
 ## [1.6.2](https://github.com/entwico/spa-resort/compare/v1.6.1...v1.6.2) (2022-08-04)
 
 
